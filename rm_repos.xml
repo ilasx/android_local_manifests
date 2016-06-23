@@ -21,7 +21,7 @@
   <remove-project path="device/google/accessory/demokit" name="device/google/accessory/demokit" />
   <remove-project path="device/sample" name="device/sample" />
 
-  <remove-project path="external/chromium-webview" name="platform/external/chromium-webview" />
+  <remove-project path="external/chromium-webview" name="CyanogenMod/external/chromium-webview" />
   <remove-project path="frameworks/webview" name="CyanogenMod/android_frameworks_webview" />
 
   <remove-project path="hardware/intel/common/libmix" name="CyanogenMod/android_hardware_intel_common_libmix" />
