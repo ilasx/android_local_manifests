@@ -40,6 +40,10 @@
   <remove-project path="hardware/intel/common/wrs_omxil_core" name="platform/hardware/intel/common/wrs_omxil_core" />
   <remove-project path="hardware/intel/sensors" name="platform/hardware/intel/sensors" />
 
+  <remove-project path="hardware/mediatek" name="platform/hardware/mediatek" />
+
+  <remove-project path="hardware/qcom/fm" name="CyanogenMod/android_hardware_qcom_fm" />
+
   <remove-project path="hardware/samsung_slsi/exynos5" name="CyanogenMod/android_hardware_samsung_slsi_exynos5" />
   <remove-project path="hardware/ti/omap4" name="CyanogenMod/android_hardware_ti_omap4" />
   <remove-project path="hardware/ti/omap4xxx" name="CyanogenMod/android_hardware_ti_omap4xxx" />
@@ -48,6 +52,12 @@
 
   <remove-project path="hardware/ti/omap3" name="platform/hardware/ti/omap3" />
   <remove-project path="hardware/ti/omap4-aah" name="platform/hardware/ti/omap4-aah" />
+
+  <remove-project path="packages/apps/FMRadio" name="CyanogenMod/android_packages_apps_FMRadio" />
+  <remove-project path="packages/apps/Gello" name="CyanogenMod/android_packages_apps_Gello" />
+  <remove-project path="packages/apps/TvSettings" name="CyanogenMod/android_packages_apps_TvSettings" />
+
+  <remove-project path="platform_testing" name="platform/platform_testing" />
 
   <remove-project path="prebuilts/android-emulator" name="platform/prebuilts/android-emulator" />
   <remove-project path="prebuilts/clang/darwin-x86/host/3.6" name="platform/prebuilts/clang/darwin-x86/host/3.6" />
