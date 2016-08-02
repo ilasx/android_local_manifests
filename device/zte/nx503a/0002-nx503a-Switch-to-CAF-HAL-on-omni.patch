@@ -1,0 +1,125 @@
+From de6b20e5d4facbc833b05b25e223fcd21343c7e1 Mon Sep 17 00:00:00 2001
+From: BambooIV <ningdisheng@hotmail.com>
+Date: Mon, 6 Jun 2016 23:21:02 +0800
+Subject: [PATCH 02/10] nx503a: Switch to CAF HAL on omni
+
+---
+ BoardConfig.mk    | 21 ++++++++++++++-------
+ omni.dependencies | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 7 deletions(-)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 2b03abc..c257308 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -74,6 +74,11 @@ AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
+ AUDIO_FEATURE_ENABLED_ANC_HEADSET := true
+ USE_CUSTOM_AUDIO_POLICY := 1
+ 
++# Audio/media
++TARGET_QCOM_AUDIO_VARIANT := caf-msm8974
++TARGET_QCOM_MEDIA_VARIANT := caf-msm8974
++TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
++
+ # Bluetooth
+ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+ BOARD_HAVE_BLUETOOTH := true
+@@ -93,6 +98,14 @@ BOARD_CHARGER_ENABLE_SUSPEND := true
+ # Disable memcpy_base.S optimization
+ TARGET_CPU_MEMCPY_BASE_OPT_DISABLE := true
+ 
++# Display
++TARGET_QCOM_DISPLAY_VARIANT := caf-msm8974
++USE_OPENGL_RENDERER := true
++TARGET_USES_ION := true
++OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
++HAVE_ADRENO_SOURCE:= false
++NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
++
+ # Enable dexpreopt to speed boot time
+ ifeq ($(HOST_OS),linux)
+   ifeq ($(call match-word-in-list,$(TARGET_BUILD_VARIANT),user),true)
+@@ -122,13 +135,6 @@ BOARD_VENDOR_QCOM_LOC_PDK_FEATURE_SET := true
+ USE_DEVICE_SPECIFIC_GPS := true
+ USE_DEVICE_SPECIFIC_LOC_API := true
+ 
+-# Graphics
+-USE_OPENGL_RENDERER := true
+-TARGET_USES_ION := true
+-OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+-HAVE_ADRENO_SOURCE:= false
+-NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+-
+ # Shader cache config options
+ # Maximum size of the  GLES Shaders that can be cached for reuse.
+ # Increase the size if shaders of size greater than 12KB are used.
+@@ -150,6 +156,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.msm
+ 
+ # QCOM hardware
+ BOARD_USES_QCOM_HARDWARE := true
++TARGET_USES_QCOM_BSP := true
+ USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY:= true
+ 
+ BOARD_USES_SECURE_SERVICES := true
+diff --git a/omni.dependencies b/omni.dependencies
+index 441f0a8..e3dc622 100644
+--- a/omni.dependencies
++++ b/omni.dependencies
+@@ -1,12 +1,41 @@
+ [
+   {
+     "remote": "omnirom",
++    "repository": "android_hardware_qcom_display-caf-msm8974",
++    "target_path": "hardware/qcom/display-caf-msm8974",
++    "revision": "android-6.0"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_hardware_qcom_media-caf-msm8974",
++    "target_path": "hardware/qcom/media-caf-msm8974",
++    "revision": "android-6.0"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_hardware_qcom_audio-caf-msm8974",
++    "target_path": "hardware/qcom/audio-caf-msm8974",
++    "revision": "android-6.0"
++  },
++    "remote": "omnirom",
+     "repository": "android_device_qcom_caf-sepolicy",
+     "target_path": "device/qcom/sepolicy",
+     "revision": "android-6.0"
+   },
+   {
+     "remote": "omnirom",
++    "repository": "android_frameworks_av",
++    "target_path": "frameworks/av-caf",
++    "revision": "android-6.0-caf"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_frameworks_native",
++    "target_path": "frameworks/native-caf",
++    "revision": "android-6.0-caf"
++  },
++  {
++    "remote": "omnirom",
+     "repository": "android_hardware_sony_boringssl-compat",
+     "target_path": "hardware/sony/boringssl-compat",
+     "revision": "android-6.0"
+@@ -19,6 +48,12 @@
+   },
+   {
+     "remote": "omnirom",
++    "repository": "vendor_qcom_opensource_display-frameworks",
++    "target_path": "vendor/qcom/opensource/display-frameworks",
++    "revision": "android-6.0"
++  },
++  {
++    "remote": "omnirom",
+     "repository": "android_packages_apps_SnapdragonCamera",
+     "target_path": "packages/apps/SnapdragonCamera",
+     "revision": "android-6.0"
+-- 
+1.9.1
+

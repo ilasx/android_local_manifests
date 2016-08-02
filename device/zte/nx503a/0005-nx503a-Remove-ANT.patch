@@ -1,0 +1,55 @@
+From 9efd72da1634052992f1701928959ac615b87b07 Mon Sep 17 00:00:00 2001
+From: BambooIV <ningdisheng@hotmail.com>
+Date: Mon, 6 Jun 2016 23:25:28 +0800
+Subject: [PATCH 05/10] nx503a: Remove ANT+
+
+---
+ BoardConfig.mk |  3 ---
+ nx503a.mk      | 10 +---------
+ 2 files changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index b2d33ec..4f1ae7a 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -60,9 +60,6 @@ TARGET_ZTEMT_DTS := true
+ # Added to indicate that protobuf-c is supported in this build
+ PROTOBUF_SUPPORTED := true
+ 
+-# ANT+
+-BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
+-
+ # Assert
+ TARGET_OTA_ASSERT_DEVICE := NX503A,nx503a,Z5S,z5s,NX503AJ,nx503aj,Z5SN,z5sn
+ 
+diff --git a/nx503a.mk b/nx503a.mk
+index e930c51..a66c80b 100644
+--- a/nx503a.mk
++++ b/nx503a.mk
+@@ -52,8 +52,7 @@ PRODUCT_COPY_FILES += \
+     frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:system/etc/permissions/android.hardware.sensor.stepdetector.xml \
+     frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
+     frameworks/native/data/etc/android.software.print.xml:system/etc/permissions/android.software.print.xml \
+-    frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
+-    external/ant-wireless/antradio-library/com.dsi.ant.antradio_library.xml:system/etc/permissions/com.dsi.ant.antradio_library.xml
++    frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml
+ 
+ # MIDI feature
+ PRODUCT_COPY_FILES += \
+@@ -243,13 +242,6 @@ PRODUCT_PACKAGES += \
+ PRODUCT_PROPERTY_OVERRIDES += \
+     wifi.interface=wlan0 \
+     ro.sys.umsdirtyratio=20
+-    
+-# ANT+
+-PRODUCT_PACKAGES += \
+-    libantradio \
+-    AntHalService \
+-    com.dsi.ant.antradio_library \
+-    antradio_app
+ 
+ PRODUCT_PACKAGES += \
+     giflib
+-- 
+1.9.1
+

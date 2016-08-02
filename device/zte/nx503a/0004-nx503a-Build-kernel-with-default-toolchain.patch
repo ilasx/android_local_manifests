@@ -1,0 +1,25 @@
+From 8280e2d6a68888f995d6e527b8ee824e1206f91e Mon Sep 17 00:00:00 2001
+From: BambooIV <ningdisheng@hotmail.com>
+Date: Mon, 6 Jun 2016 23:23:15 +0800
+Subject: [PATCH 04/10] nx503a: Build kernel with default toolchain
+
+This revert commit 9f3fbf7b43e224f24f5d5e00681af866bae3e405.
+---
+ BoardConfig.mk | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index c257308..b2d33ec 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -56,7 +56,6 @@ TARGET_KERNEL_SOURCE := kernel/zte/nx503a
+ TARGET_KERNEL_ARCH := arm
+ TARGET_KERNEL_CONFIG := msm8974-NX503A_defconfig
+ TARGET_ZTEMT_DTS := true
+-TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
+ 
+ # Added to indicate that protobuf-c is supported in this build
+ PROTOBUF_SUPPORTED := true
+-- 
+1.9.1
+

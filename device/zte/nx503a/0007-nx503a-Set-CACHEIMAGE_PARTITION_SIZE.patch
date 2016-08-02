@@ -1,0 +1,25 @@
+From 0f1a158fa9315aa511bc36e972d3a19260b0549e Mon Sep 17 00:00:00 2001
+From: BambooIV <ningdisheng@hotmail.com>
+Date: Tue, 7 Jun 2016 10:08:32 +0800
+Subject: [PATCH 07/10] nx503a: Set CACHEIMAGE_PARTITION_SIZE
+
+* Use hammerhead value
+---
+ BoardConfig.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 4f1ae7a..1a92938 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -117,6 +117,7 @@ BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
+ BOARD_RECOVERYIMAGE_PARTITION_SIZE := 25165824
+ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1610612736
+ BOARD_USERDATAIMAGE_PARTITION_SIZE := 12738083840
++BOARD_CACHEIMAGE_PARTITION_SIZE := 734003200
+ BOARD_FLASH_BLOCK_SIZE := 131072
+ 
+ # Flags
+-- 
+1.9.1
+

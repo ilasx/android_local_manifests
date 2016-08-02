@@ -1,0 +1,387 @@
+From 0cd2b997f4ff1fee7831f6524aa26c90f790a5ae Mon Sep 17 00:00:00 2001
+From: BambooIV <ningdisheng@hotmail.com>
+Date: Mon, 6 Jun 2016 23:18:41 +0800
+Subject: [PATCH 01/10] nx503a: Make Omnirom compatible
+
+---
+ AndroidProducts.mk                                 |  2 +-
+ BoardConfig.mk                                     | 15 +++----
+ cm.dependencies                                    | 10 -----
+ cm.mk                                              | 35 ----------------
+ cmhw/org/cyanogenmod/hardware/KeyDisabler.java     | 47 ----------------------
+ nx503a.mk                                          |  2 +-
+ omni.dependencies                                  | 26 ++++++++++++
+ omni_nx503a.mk                                     | 42 +++++++++++++++++++
+ .../frameworks/base/core/res/res/values/config.xml | 28 -------------
+ overlay/vendor/cmsdk/cm/res/res/values/config.xml  | 23 -----------
+ recovery/twrp.fstab                                |  9 +++++
+ vendorsetup.sh                                     |  4 +-
+ 12 files changed, 85 insertions(+), 158 deletions(-)
+ delete mode 100644 cm.dependencies
+ delete mode 100644 cm.mk
+ delete mode 100644 cmhw/org/cyanogenmod/hardware/KeyDisabler.java
+ create mode 100644 omni.dependencies
+ create mode 100644 omni_nx503a.mk
+ delete mode 100644 overlay/vendor/cmsdk/cm/res/res/values/config.xml
+ create mode 100644 recovery/twrp.fstab
+
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index bb6fe94..6736c8b 100644
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -14,4 +14,4 @@
+ # limitations under the License.
+ 
+ PRODUCT_MAKEFILES := \
+-    $(LOCAL_DIR)/nx503a.mk
++    $(LOCAL_DIR)/omni_nx503a.mk
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index a7a33aa..2b03abc 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -90,9 +90,6 @@ COMMON_GLOBAL_CFLAGS += -DOPPO_CAMERA_HARDWARE -DCAMERA_VENDOR_L_COMPAT
+ BOARD_CHARGER_SHOW_PERCENTAGE := true
+ BOARD_CHARGER_ENABLE_SUSPEND := true
+ 
+-# CM Hardware
+-BOARD_HARDWARE_CLASS := $(LOCAL_PATH)/cmhw/
+-
+ # Disable memcpy_base.S optimization
+ TARGET_CPU_MEMCPY_BASE_OPT_DISABLE := true
+ 
+@@ -142,9 +139,6 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
+ # of the device.
+ MAX_EGL_CACHE_SIZE := 2048*1024
+ 
+-# Init
+-TARGET_INIT_VENDOR_LIB := libinit_msm
+-
+ # Keylayout
+ PRODUCT_COPY_FILES := $(filter-out frameworks/base/data/keyboards/Generic.kl:system/usr/keylayout/Generic.kl , $(PRODUCT_COPY_FILES))
+ 
+@@ -158,19 +152,20 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.msm
+ BOARD_USES_QCOM_HARDWARE := true
+ USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY:= true
+ 
+-# Recovery
+-TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/recovery/recovery.fstab
+-BOARD_VENDOR := zte-qcom
+-
+ BOARD_USES_SECURE_SERVICES := true
+ 
+ # Recovery
++TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/recovery/recovery.fstab
++BOARD_VENDOR := zte-qcom
+ BOARD_SUPPRESS_EMMC_WIPE := true
+ BOARD_HAS_NO_SELECT_BUTTON := true
+ BOARD_RECOVERY_SWIPE := true
+ TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+ TARGET_USERIMAGES_USE_EXT4 := true
+ 
++# TWRP
++TW_THEME := portrait_hdpi
++
+ # RIL
+ TARGET_RIL_VARIANT := caf
+ 
+diff --git a/cm.dependencies b/cm.dependencies
+deleted file mode 100644
+index 178e363..0000000
+--- a/cm.dependencies
++++ /dev/null
+@@ -1,10 +0,0 @@
+-[
+-  {
+-    "repository": "android_device_qcom_common",
+-    "target_path": "device/qcom/common"
+-  },
+-  {
+-    "repository": "android_external_sony_boringssl-compat",
+-    "target_path": "external/sony/boringssl-compat"
+-  }
+-]
+diff --git a/cm.mk b/cm.mk
+deleted file mode 100644
+index d4bd310..0000000
+--- a/cm.mk
++++ /dev/null
+@@ -1,35 +0,0 @@
+-#
+-# Copyright (C) 2016 The CyanogenMod Project
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#      http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-
+-# Inherit device configuration
+-$(call inherit-product, device/zte/nx503a/nx503a.mk)
+-
+-# Enhanced NFC
+-$(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
+-
+-# Inherit some common CM stuff.
+-$(call inherit-product, vendor/cm/config/common_full_phone.mk)
+-
+-## Device identifier. This must come after all inclusions
+-PRODUCT_DEVICE := nx503a
+-PRODUCT_NAME := cm_nx503a
+-PRODUCT_BRAND := nubia
+-PRODUCT_MODEL := NX503A
+-PRODUCT_MANUFACTURER := nubia
+-
+-PRODUCT_BUILD_PROP_OVERRIDES += \
+-    PRODUCT_NAME=NX503A \
+-    BUILD_FINGERPRINT=nubia/NX503A/NX503A:4.4.2/KVT49L/eng.nubia.20150120.194044:user/release-keys \
+-    PRIVATE_BUILD_DESC="NX503A-user 4.4.2 KVT49L eng.nubia.20150120.194044 release-keys"
+diff --git a/cmhw/org/cyanogenmod/hardware/KeyDisabler.java b/cmhw/org/cyanogenmod/hardware/KeyDisabler.java
+deleted file mode 100644
+index 7dbbffe..0000000
+--- a/cmhw/org/cyanogenmod/hardware/KeyDisabler.java
++++ /dev/null
+@@ -1,47 +0,0 @@
+-/*
+- * Copyright (C) 2016 The CyanogenMod Project
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *      http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package org.cyanogenmod.hardware;
+-
+-import org.cyanogenmod.hardware.util.FileUtils;
+-import java.io.File;
+-
+-/*
+- * Disable capacitive keys
+- *
+- * This is intended for use on devices in which the capacitive keys
+- * can be fully disabled for replacement with a soft navbar. You
+- * really should not be using this on a device with mechanical or
+- * otherwise visible-when-inactive keys
+- */
+-
+-public class KeyDisabler {
+-
+-    private static String CONTROL_PATH = "/proc/touchpanel/keypad_enable";
+-
+-    public static boolean isSupported() {
+-        return new File(CONTROL_PATH).exists();
+-    }
+-
+-    public static boolean isActive() {
+-        return (FileUtils.readOneLine(CONTROL_PATH).equals("0"));
+-    }
+-
+-    public static boolean setActive(boolean state) {
+-        return FileUtils.writeLine(CONTROL_PATH, (state ? "0" : "1"));
+-    }
+-
+-}
+diff --git a/nx503a.mk b/nx503a.mk
+index cc45d1d..e930c51 100644
+--- a/nx503a.mk
++++ b/nx503a.mk
+@@ -118,7 +118,7 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_PACKAGES += \
+     libxml2 \
+     camera.msm8974 \
+-    Snap
++    SnapdragonCamera
+     
+ # Connectivity Engine support
+ PRODUCT_PACKAGES += \
+diff --git a/omni.dependencies b/omni.dependencies
+new file mode 100644
+index 0000000..441f0a8
+--- /dev/null
++++ b/omni.dependencies
+@@ -0,0 +1,26 @@
++[
++  {
++    "remote": "omnirom",
++    "repository": "android_device_qcom_caf-sepolicy",
++    "target_path": "device/qcom/sepolicy",
++    "revision": "android-6.0"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_hardware_sony_boringssl-compat",
++    "target_path": "hardware/sony/boringssl-compat",
++    "revision": "android-6.0"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_hardware_ril",
++    "target_path": "hardware/ril-caf",
++    "revision": "android-6.0-caf"
++  },
++  {
++    "remote": "omnirom",
++    "repository": "android_packages_apps_SnapdragonCamera",
++    "target_path": "packages/apps/SnapdragonCamera",
++    "revision": "android-6.0"
++  }
++]
+diff --git a/omni_nx503a.mk b/omni_nx503a.mk
+new file mode 100644
+index 0000000..fdadf35
+--- /dev/null
++++ b/omni_nx503a.mk
+@@ -0,0 +1,42 @@
++#
++# Copyright (C) 2016 The CyanogenMod Project
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++# Inherit device configuration
++$(call inherit-product, device/zte/nx503a/nx503a.mk)
++
++# Inherit APNs list
++$(call inherit-product, vendor/omni/config/gsm.mk)
++
++# Inherit from our custom product configuration
++$(call inherit-product, vendor/omni/config/common.mk)
++
++# Use specific resolution for bootanimation
++TARGET_BOOTANIMATION_SIZE := 720x407
++
++# TWRP
++PRODUCT_COPY_FILES += \
++    device/zte/nx503a/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
++
++## Device identifier. This must come after all inclusions
++PRODUCT_DEVICE := nx503a
++PRODUCT_NAME := omni_nx503a
++PRODUCT_BRAND := nubia
++PRODUCT_MODEL := NX503A
++PRODUCT_MANUFACTURER := nubia
++
++PRODUCT_BUILD_PROP_OVERRIDES += \
++    PRODUCT_NAME=NX503A \
++    BUILD_FINGERPRINT=nubia/NX503A/NX503A:4.4.2/KVT49L/eng.nubia.20150120.194044:user/release-keys \
++    PRIVATE_BUILD_DESC="NX503A-user 4.4.2 KVT49L eng.nubia.20150120.194044 release-keys"
+diff --git a/overlay/frameworks/base/core/res/res/values/config.xml b/overlay/frameworks/base/core/res/res/values/config.xml
+index a1508df..69bfe1c 100644
+--- a/overlay/frameworks/base/core/res/res/values/config.xml
++++ b/overlay/frameworks/base/core/res/res/values/config.xml
+@@ -228,34 +228,6 @@
+         on the headphone/microphone jack. When false use the older uevent framework. -->
+     <bool name="config_useDevInputEventForAudioJack">true</bool>
+ 
+-    <!-- Hardware 'face' keys present on the device, stored as a bit field.
+-        This integer should equal the sum of the corresponding value for each
+-        of the following keys present:
+-            1 - Home
+-            2 - Back
+-            4 - Menu
+-            8 - Assistant (search)
+-            16 - App switch
+-            32 - Camera
+-            64 - Volume rocker
+-        For example, a device with Home, Back and Menu keys would set this
+-        config to 7. -->
+-    <integer name="config_deviceHardwareKeys">103</integer>
+-
+-    <!-- Hardware keys present on the device with the ability to wake, stored as a bit field.
+-         This integer should equal the sum of the corresponding value for each
+-         of the following keys present:
+-             1 - Home
+-             2 - Back
+-             4 - Menu
+-             8 - Assistant (search)
+-            16 - App switch
+-            32 - Camera
+-            64 - Volume rocker
+-         For example, a device with Home, Back and Menu keys would set this
+-         config to 7. -->
+-    <integer name="config_deviceHardwareWakeKeys">103</integer>
+-
+     <!-- Default interface to monitor data use -->
+     <string name="config_datause_iface">rmnet0</string>
+ 
+diff --git a/overlay/vendor/cmsdk/cm/res/res/values/config.xml b/overlay/vendor/cmsdk/cm/res/res/values/config.xml
+deleted file mode 100644
+index 787ceb4..0000000
+--- a/overlay/vendor/cmsdk/cm/res/res/values/config.xml
++++ /dev/null
+@@ -1,23 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<!--
+-     Copyright (C) 2015 The CyanogenMod Project
+-
+-     Licensed under the Apache License, Version 2.0 (the "License");
+-     you may not use this file except in compliance with the License.
+-     You may obtain a copy of the License at
+-
+-          http://www.apache.org/licenses/LICENSE-2.0
+-
+-     Unless required by applicable law or agreed to in writing, software
+-     distributed under the License is distributed on an "AS IS" BASIS,
+-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-     See the License for the specific language governing permissions and
+-     limitations under the License.
+--->
+-<resources>
+-    <!-- Default value for proximity check on screen wake
+-     NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)-->
+-    <bool name="config_proximityCheckOnWake">true</bool>
+-    <integer name="config_proximityCheckTimeout">300</integer>
+-    <bool name="config_proximityCheckOnWakeEnabledByDefault">false</bool>
+-</resources>
+diff --git a/recovery/twrp.fstab b/recovery/twrp.fstab
+new file mode 100644
+index 0000000..c97964e
+--- /dev/null
++++ b/recovery/twrp.fstab
+@@ -0,0 +1,9 @@
++/boot       emmc    /dev/block/platform/msm_sdcc.1/by-name/boot
++/cache      ext4    /dev/block/platform/msm_sdcc.1/by-name/cache
++/data       ext4    /dev/block/platform/msm_sdcc.1/by-name/userdata
++/firmware   vfat    /dev/block/platform/msm_sdcc.1/by-name/modem
++/misc       emmc    /dev/block/platform/msm_sdcc.1/by-name/misc
++/persist    ext4    /dev/block/platform/msm_sdcc.1/by-name/persist
++/recovery   emmc    /dev/block/platform/msm_sdcc.1/by-name/recovery
++/sdcard     vfat    /dev/block/platform/msm_sdcc.1/by-name/grow
++/system     ext4    /dev/block/platform/msm_sdcc.1/by-name/system
+diff --git a/vendorsetup.sh b/vendorsetup.sh
+index 875bcb3..c54f340 100755
+--- a/vendorsetup.sh
++++ b/vendorsetup.sh
+@@ -14,6 +14,4 @@
+ # limitations under the License.
+ #
+ 
+-add_lunch_combo cm_nx503a-user
+-add_lunch_combo cm_nx503a-userdebug
+-add_lunch_combo cm_nx503a-eng
++add_lunch_combo omni_nx503a-userdebug
+-- 
+1.9.1
+
