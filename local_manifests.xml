@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
   <!-- cm dependencies -->
-  <project path="device/qcom/common" name="CyanogenMod/android_device_qcom_common" remote="github" revision="cm-13.0" />
-  <project path="external/sony/boringssl-compat" name="CyanogenMod/android_external_sony_boringssl-compat" remote="github" revision="cm-13.0" />
+  <project path="device/qcom/common" name="CyanogenMod/android_device_qcom_common" remote="github" revision="cm-14.1" />
+  <project path="external/sony/boringssl-compat" name="CyanogenMod/android_external_sony_boringssl-compat" remote="github" revision="cm-14.1" />
 
   <!-- zte nx503a -->
-  <project path="device/zte/nx503a" name="BambooIV/android_device_zte_nx503a" revision="cm-13.0" />
-  <project path="kernel/zte/nx503a" name="BambooIV/android_kernel_zte_nx503a" revision="cm-13.0" />
-  <project path="vendor/zte/nx503a" name="BambooIV/android_vendor_zte_nx503a" revision="cm-13.0" />
+  <project path="device/zte/nx503a" name="BambooIV/android_device_zte_nx503a" revision="cm-14.1" />
+  <project path="kernel/zte/nx503a" name="BambooIV/android_kernel_zte_nx503a" revision="cm-14.1" />
+  <project path="vendor/zte/nx503a" name="BambooIV/android_vendor_zte_nx503a" revision="cm-14.1" />
 </manifest>
