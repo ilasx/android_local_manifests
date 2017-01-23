@@ -6,6 +6,7 @@
   <project path="external/busybox" name="omnirom/android_external_busybox" revision="android-7.1" />
   <project path="bootable/recovery-twrp" name="omnirom/android_bootable_recovery" revision="android-7.1" />
   
+  
   <!-- zte nx503a -->
   <project path="device/zte/nx503a" name="ilasx/android_device_zte_nx503a" revision="cm-14.1" />
   <project path="kernel/zte/nx503a" name="ilasx/android_kernel_zte_nx503a" revision="cm-14.1" />
